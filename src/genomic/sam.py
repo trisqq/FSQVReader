@@ -8,7 +8,6 @@ class Alignment:
 
 
 
-
 class SamReader(GenomicDataReader):
 
     def __init__(self, filename):
@@ -37,7 +36,19 @@ class SamReader(GenomicDataReader):
         pass
 
     def validate_coordinates(self, chr, pos):
-        pass
+        result = False
+        chromosome = {}
+        for y in self.get_chr():
+            if chr in y:
+                result = True
+                chromosome = y
+        if  result == True and 0 < pos <= int(chromosome[chr]):
+            result = True
+        else:
+            result = False
+        return result
+
+
 
     def read_alignments(self):
         """Возвращает список всех выравниваний"""
@@ -49,6 +60,11 @@ class SamReader(GenomicDataReader):
                     setattr(alignm, k, v)
                 al_list.append(alignm)
         return al_list
+
+
+
+
+
 
     def flag_analyze(self,flag):
         """Анализирует флаг выравнивания, возвращает список с битами"""
@@ -68,8 +84,8 @@ class SamReader(GenomicDataReader):
         for e in self.read():
             if isinstance(e, list):
                 new_header = e
-        samheader = "".join(new_header)
-        return samheader
+
+        return new_header
 
 
     def filter_alignments(self, filter: int):
@@ -81,17 +97,37 @@ class SamReader(GenomicDataReader):
         return filtered_alignments
 
 
-
-
     def calculate_coverage(self):
         pass
+
+
+    def get_chr(self):
+        chr_list = []
+        for i in self.get_header():
+            chr_name = ""
+            chr_len = ""
+            if i.startswith("@SQ"):
+                chr_data = {}
+                parts = i.strip().split("\t")
+                for part in parts:
+
+                    if part.startswith("SN:"):
+                        chr_name = part[3:]
+                    elif part.startswith("LN:"):
+                        chr_len = part[3:]
+                chr_data.update({chr_name: chr_len})
+                chr_list.append(chr_data)
+        return chr_list
+
+
+
+
 
 
 
 
 a = SamReader(r"C:\Users\bogda\PycharmProjects\PythonProject\FSQVReader\1")
-
-print(a.get_chromosomes())
+print(a.validate_coordinates("chr1", 200))
 
 
 
