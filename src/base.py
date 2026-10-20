@@ -18,7 +18,7 @@ class Reader(ABC):
     @abstractmethod
     def _parse_line(self, line):
         """Определяет тип строки в файле"""
-        ...
+        raise NotImplementedError
 
 
 
@@ -26,12 +26,12 @@ class GenomicDataReader(Reader):
 
     @abstractmethod
     def get_chromosomes(self):
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def get_reference_genomes(self):
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def validate_coordinates(self, chr, pos):
-        ...
+        raise NotImplementedError

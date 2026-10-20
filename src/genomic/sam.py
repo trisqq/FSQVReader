@@ -1,4 +1,5 @@
-from FSQVReader.src.base import GenomicDataReader
+from ..base import GenomicDataReader
+
 
 class Alignment:
     def __init__(self):
@@ -128,10 +129,3 @@ class SamReader(GenomicDataReader):
 
 a = SamReader(r"C:\Users\bogda\PycharmProjects\PythonProject\FSQVReader\1")
 print(a.validate_coordinates("chr1", 200))
-
-
-
-
-
-
-
