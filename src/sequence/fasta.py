@@ -2,24 +2,24 @@ from src.base import SequenceReader
 
 
 class FastaReader(SequenceReader):
-    """Читатель файлов в формате FASTA.
+    """Читатель файлов в формате FASTA
 
     Наследует базовый интерфейс SequenceReader и реализует методы
-    проверки, чтения и анализа последовательностей FASTA.
+    проверки, чтения и анализа последовательностей FASTA
     """
     def __init__(self,filename):
         super().__init__(filename) #self.__filename=filename
     
     def is_fasta(self):
-        """Проверяет, соответствует ли файл формату FASTA.
+        """Проверяет, соответствует ли файл формату FASTA
 
         Файл считается корректным FASTA, если каждая последовательность
         начинается со строки-заголовка '>' и содержит хотя бы одну
-        непустую строку с данными до следующего заголовка.
+        непустую строку с данными до следующего заголовка
 
         Возвращает:
-            bool: True - если файл валиден как FASTA, иначе - False.
-                  Также возвращает False при ошибке чтения файла (OSError).
+            bool: True - если файл валиден как FASTA, иначе - False
+                  Также возвращает False при ошибке чтения файла (OSError)
         """
         
         try:
@@ -53,6 +53,14 @@ class FastaReader(SequenceReader):
         
     
     def validate_sequence(self, sequence):
+        """Проверяет, что последовательность состоит только из нуклеотидов
+
+        Допустимые символы: A, T, U, G, C.
+        Пробелы и переводы строк игнорируются
+        
+        Возвращает:
+            bool: True, если все символы допустимы, если нет -  False
+        """
         symbols = sequence.replace(" ", "").replace("\n", "").upper()
         nucleotide = set("ATUGC")
         protein = set("ACDEFGHIKLMNPQRSTVWY")
@@ -63,6 +71,14 @@ class FastaReader(SequenceReader):
         return True
     
     def read(self):
+        """Читает FASTA-файл и выдаёт записи по одной
+
+        Многострочные последовательности склеиваются в одну строку
+        ID — первое слово после '>'
+        
+        Возвращает: 
+            запись с полями id (str) и data (str)
+        """
         with open(self._filename, 'r', encoding="utf-8") as file:
             seq_id = None
             seq_data = []
@@ -85,18 +101,29 @@ class FastaReader(SequenceReader):
                 yield {"id": seq_id, "data": "".join(seq_data)}
     
     def get_sequence(self, seq_id):
+        """Возвращает последовательность по идентификатору
+            str/None: последовательность или None, если ID не найден
+        """
         for record in self.read():
             if record["id"] == seq_id:
                 return record["data"]
         return None #Информация не найдена
     
-    def get_sequence_count(self): #Получение количества последовательностей
+    def get_sequence_count(self):
+        """Возвращает количество записей в файле
+            int: число последовательностей (0 для пустого файла)
+        """
         count = 0
         for i in self.read(): 
             count += 1
         return count
 
     def get_average_length(self):
+        """Вычисляет среднюю длину последовательностей в файле
+
+        Возвращает:
+            float: средняя длина записи, 0 - если записей нет
+        """
         whole_length = 0
         count = 0
         for record in self.read():
@@ -109,12 +136,22 @@ class FastaReader(SequenceReader):
             return 0
         
     def read_sequences(self):
+        """Возвращает множество идентификаторов записей
+            set[str]: множество ID (по факту - из одного элемента)
+        """
         result = {}
         for record in self.read():
             result[record["id"]] = record["data"]
         return result
               
     def _parse_line(self, line):
+        """Разбирает строку FASTA-файла
+
+        Возвращает:
+            tuple[bool, str]: (True, id) - для заголовка '>',
+            (False, "") - для пустой строки,
+            (False, данные) - для строки с последовательностью
+        """
         line = line.strip()
     
         if not line:
