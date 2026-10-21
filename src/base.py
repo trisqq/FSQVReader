@@ -35,3 +35,13 @@ class GenomicDataReader(Reader):
     @abstractmethod
     def validate_coordinates(self, chr, pos):
         raise NotImplementedError
+
+class SequenceReader(Reader):
+    
+    @abstractmethod
+    def get_sequence(self, seq_id: str) -> str:
+        ...
+        
+    @abstractmethod
+    def validate_sequence(self, sequence: str) -> bool:
+        ...
