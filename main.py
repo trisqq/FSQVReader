@@ -53,5 +53,5 @@ def demo_sam(filename):
 if __name__ == "__main__":
     main()
     demo_vcf("sample.vcf")
-    demo_sam(r"../../sample_sam")
+    demo_sam("sample_sam")
 
