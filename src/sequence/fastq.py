@@ -92,7 +92,7 @@ class FastqReader(Reader):
             qual = record['quality']
             sequence_lengths.append(len(seq))
             for i, (nuc, q_char) in enumerate(zip(seq, qual)):
-                per_base_quality[i].append(ord(q_char) - 33) # Phred+33
+                per_base_quality[i].append(ord(q_char) - 33)
                 if nuc.upper() in per_base_content[i]:
                     per_base_content[i][nuc.upper()] += 1
                 else:
