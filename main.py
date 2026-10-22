@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 
 
-if __main__ == '__main__':
+if __name__ == '__main__':
     fastq = FastqReader("test.fastq")
     print(f"Количество последовательностей: {fastq.get_sequence_count()}")
     print(f"Средняя длина: {fastq.get_average_length():.2f} bp")        
