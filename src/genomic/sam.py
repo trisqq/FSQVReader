@@ -1,4 +1,4 @@
-from FSQVReader.src.base import GenomicDataReader
+from src.base import GenomicDataReader
 import pandas as pd
 
 class Alignment:
@@ -212,17 +212,6 @@ class SamReader(GenomicDataReader):
 
 
 
-
-
-
-
-
-
-
-
-a = SamReader(r"/FSQVReader/sample_sam")
-
-print(a.get_alignments_in_region('chr1', 1, 100))
 
 
 
