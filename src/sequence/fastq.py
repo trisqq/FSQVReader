@@ -1,4 +1,4 @@
-from base import Reader
+from src.base import Reader
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -21,9 +21,8 @@ class FastqReader(Reader):
             seq = self.file.readline().strip()
             plus = self.file.readline().strip()
             qual = self.file.readline().strip()
-            yield 
-            {
-                'id': header[1:].split()[0], 
+            yield {
+                'id': header[1:].split()[0],
                 'description': header,
                 'sequence': seq,
                 'quality': qual

@@ -8,7 +8,7 @@ class FastaReader(SequenceReader):
     проверки, чтения и анализа последовательностей FASTA
     """
     def __init__(self,filename):
-        super().__init__(filename) #self.__filename=filename
+        super().__init__(filename) 
 
     def is_fasta(self):
         """Проверяет, соответствует ли файл формату FASTA
