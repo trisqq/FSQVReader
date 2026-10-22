@@ -24,7 +24,3 @@ pip install -r requirements.txt
 
 # 4. Запустить демонстрацию
 python main.py
-
-# 5. Запустить тесты (необязательно)
-python -m pytest test_fasta.py -v
-```
