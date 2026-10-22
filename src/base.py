@@ -37,11 +37,11 @@ class GenomicDataReader(Reader):
         raise NotImplementedError
 
 class SequenceReader(Reader):
-    
+
     @abstractmethod
     def get_sequence(self, seq_id: str) -> str:
-        ...
-        
+        raise NotImplementedError
+
     @abstractmethod
     def validate_sequence(self, sequence: str) -> bool:
-        ...
+        raise NotImplementedError

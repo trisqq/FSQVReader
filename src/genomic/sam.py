@@ -1,13 +1,11 @@
-from ..base import GenomicDataReader
-
+from FSQVReader.src.base import GenomicDataReader
+import pandas as pd
 
 class Alignment:
     def __init__(self):
         pass
     def __repr__(self):
         return f"Alignment: {self.__dict__}"
-
-
 
 class SamReader(GenomicDataReader):
 
@@ -29,7 +27,10 @@ class SamReader(GenomicDataReader):
     def get_chromosomes(self):
         chromosomes = set()
         for y in self.read_alignments():
-            chromosomes.add(y.rname)
+            try:
+                chromosomes.add(y.rname)
+            except AttributeError:
+                continue
         return chromosomes
 
 
@@ -38,17 +39,20 @@ class SamReader(GenomicDataReader):
 
     def validate_coordinates(self, chr, pos):
         result = False
-        chromosome = {}
-        for y in self.get_chr():
-            if chr in y:
-                result = True
-                chromosome = y
-        if  result == True and 0 < pos <= int(chromosome[chr]):
-            result = True
-        else:
-            result = False
-        return result
+        chrom_len = 0
 
+        ref_data = self.get_ref_chr_data()
+
+        for y in ref_data:
+            if chr == y:
+                result = True
+                chrom_len = int(ref_data[y])
+                break
+
+        if result == True and 0 < pos <= chrom_len:
+            return True
+        else:
+            return False
 
 
     def read_alignments(self):
@@ -61,10 +65,6 @@ class SamReader(GenomicDataReader):
                     setattr(alignm, k, v)
                 al_list.append(alignm)
         return al_list
-
-
-
-
 
 
     def flag_analyze(self,flag):
@@ -93,22 +93,48 @@ class SamReader(GenomicDataReader):
         """фильтрует выравнивания по конкретному биту"""
         filtered_alignments = []
         for x in self.read_alignments():
-            if filter in self.flag_analyze(int(x.flag)):
-                filtered_alignments.append(x)
+            try:
+                if filter in self.flag_analyze(int(x.flag)):
+                    filtered_alignments.append(x)
+            except AttributeError:
+                continue
         return filtered_alignments
 
 
-    def calculate_coverage(self):
-        pass
+    def alignments_coordinates(self):
+        coords_list = []
+        for x in self.read_alignments():
+            try:
+                start = int(x.pos)
+                end = len(x.seq)
+            except AttributeError:
+                continue
+            coordinates = list(range(start, start + end ))
+            coords_list.append(coordinates)
+        return coords_list
 
 
-    def get_chr(self):
-        chr_list = []
+
+    def calculate_coverage(self, chrom):
+        cov_data = {}
+        for key, value in self.get_ref_chr_data().items():
+            if chrom == key:
+                for y in range(1, int(value)+1):
+                    cov_count = 0
+                    for j in self.alignments_coordinates():
+                        if y in j:
+                            cov_count += 1
+                    cov_data.update({y: cov_count})
+        return cov_data
+
+
+
+    def get_ref_chr_data(self):
+        chr_list = {}
         for i in self.get_header():
             chr_name = ""
             chr_len = ""
             if i.startswith("@SQ"):
-                chr_data = {}
                 parts = i.strip().split("\t")
                 for part in parts:
 
@@ -116,9 +142,76 @@ class SamReader(GenomicDataReader):
                         chr_name = part[3:]
                     elif part.startswith("LN:"):
                         chr_len = part[3:]
-                chr_data.update({chr_name: chr_len})
-                chr_list.append(chr_data)
+                chr_list.update({chr_name: chr_len})
         return chr_list
+
+    def get_header_by_tag(self, tag):
+        """
+        Возвращает список строк заголовка, начинающихся с указанного тега.
+        """
+        if not tag.startswith('@'):
+            tag = '@' + tag
+
+        header_lines = self.get_header()
+        result = []
+
+        for line in header_lines:
+            if line.startswith(tag):
+                result.append(line)
+
+        return result
+
+    def get_alignments_count(self):
+        """
+        Возвращает общее количество выравниваний в файле.
+        """
+        self.file.seek(0)
+        alignments = self.read_alignments()
+        return len(alignments)
+
+    def get_alignment_stats(self):
+        self.file.seek(0)
+        alignments = self.read_alignments()
+
+        chroms = []
+        for align in alignments:
+            if hasattr(align, 'rname'):
+                chroms.append(align.rname)
+
+        series = pd.Series(chroms)
+        counts = series.value_counts()
+
+        stats = pd.DataFrame({'chromosome': counts.index, 'count': counts.values})
+        return stats
+
+    def get_alignments_in_region(self, chrom, start, end):
+        """
+        Возвращает список выравниваний, пересекающихся с регионом [start, end] на хромосоме chrom.
+        Координаты start и end включительно (1-based).
+        """
+        self.file.seek(0)
+        alignments = self.read_alignments()
+
+        result = []
+
+        for align in alignments:
+            if getattr(align, 'rname', None) != chrom:
+                continue
+
+            try:
+                align_start = int(align.pos)
+                align_end = align_start + len(align.seq) - 1
+
+            except (AttributeError, ValueError):
+                continue
+
+            if align_start <= end and align_end >= start:
+                result.append(align)
+
+        return result
+
+
+
 
 
 
@@ -128,4 +221,9 @@ class SamReader(GenomicDataReader):
 
 
 a = SamReader(r"C:\Users\bogda\PycharmProjects\PythonProject\FSQVReader\1")
-print(a.validate_coordinates("chr1", 200))
+
+print(a.get_alignments_in_region('chr1', 1, 100))
+
+
+
+
