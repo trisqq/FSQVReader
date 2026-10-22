@@ -187,7 +187,7 @@ class SamReader(GenomicDataReader):
     def get_alignments_in_region(self, chrom, start, end):
         """
         Возвращает список выравниваний, пересекающихся с регионом [start, end] на хромосоме chrom.
-        Координаты start и end включительно (1-based).
+        Координаты start и end включительно (sample_sam-based).
         """
         self.file.seek(0)
         alignments = self.read_alignments()
@@ -220,7 +220,7 @@ class SamReader(GenomicDataReader):
 
 
 
-a = SamReader(r"C:\Users\bogda\PycharmProjects\PythonProject\FSQVReader\1")
+a = SamReader(r"/FSQVReader/sample_sam")
 
 print(a.get_alignments_in_region('chr1', 1, 100))
 

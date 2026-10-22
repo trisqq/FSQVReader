@@ -31,7 +31,7 @@ def demo_vcf(filename):
     print(f"Хромосомы (contig): {reader.get_chromosomes()}")
     print(f"Количество вариантов: {reader.get_variant_count()}")
     print(f"Статистика по хромосомам:\n{reader.get_chromosome_stats()}")
-    print(f"Варианты в chr1:1-500: {list(reader.get_variants_in_region('chr1', 1, 500))}")
+    print(f"Варианты в chr1:sample_sam-500: {list(reader.get_variants_in_region('chr1', 1, 500))}")
     print(f"Варианты с QUAL >= 30: {list(reader.filter_by_quality(30))}")
     reader.close()
 
@@ -53,5 +53,5 @@ def demo_sam(filename):
 if __name__ == "__main__":
     main()
     demo_vcf("sample.vcf")
-    demo_sam("1")
+    demo_sam("sample_sam")
 
