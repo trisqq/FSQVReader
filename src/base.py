@@ -8,6 +8,7 @@ class Reader(ABC):
 
     def read(self):
         """Считывает строчки в файле, выдает их в виде генератора"""
+        self.file.seek(0)
         for line in self.file:
             yield self._parse_line(line)
 

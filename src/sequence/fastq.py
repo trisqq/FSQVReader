@@ -108,7 +108,7 @@ class FastqReader(Reader):
     def _plot_quality(self, per_base_quality, output_dir):
 
         """
-        График 1: Per base sequence quality
+        График sample_sam: Per base sequence quality
         """
 
         positions = sorted(per_base_quality.keys())
