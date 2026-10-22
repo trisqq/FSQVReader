@@ -1,6 +1,6 @@
 from src.sequence.fastq import FastqReader
 
-if __main__ == 'main'
+if __main__ == 'main':
     try:
         fastq = FastqReader("test.fastq")
         print(f"Количество последовательностей: {fastq.get_sequence_count()}")
