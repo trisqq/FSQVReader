@@ -5,6 +5,8 @@ from src.sequence.fastq import FastqReader
 
 
 def main():
+
+
     filename = "sequence.fasta"
     reader = FastaReader(filename)
     is_fasta = reader.is_fasta()
@@ -47,23 +49,40 @@ def demo_sam(filename):
     print(f"Количество выравниваний в файле: {reader.get_alignments_count()}")
     print(f"Хромосомы-выравнивания: {reader.get_alignment_stats()}")
     print(f"Выравнивания в конкретной области: {reader.get_alignments_in_region("chr2", 50, 150)}")
+    reader.close()
+
+def demo_fastaq():
+    fastq = FastqReader("test.fastq")
+    print(f"Количество последовательностей: {fastq.get_sequence_count()}")
+    print(f"Средняя длина: {fastq.get_average_length():.2f} bp")
+    print("Строим графики (это может занять пару секунд)...")
+    fastq.generate_plots(limit=1000)
+    fastq.close()
 
 
 
 
 if __name__ == "__main__":
+    print("")
+    print("FASTA:")
+    print("")
     main()
+    print("")
     print("=========================================================================")
+    print("")
+    print("VCF:")
+    print("")
     demo_vcf("sample.vcf")
+    print("")
     print("=========================================================================")
+    print("")
+    print("SAM:")
+    print("")
     demo_sam("sample_sam")
+    print("")
+    print("=========================================================================")
+    print("")
+    print("FASTQ:")
+    print("")
+    demo_fastaq()
 
-
-
-if __main__ == '__main__':
-    fastq = FastqReader("test.fastq")
-    print(f"Количество последовательностей: {fastq.get_sequence_count()}")
-    print(f"Средняя длина: {fastq.get_average_length():.2f} bp")        
-    print("Строим графики (это может занять пару секунд)...")
-    fastq.generate_plots(limit=1000) 
-    fastq.close()
