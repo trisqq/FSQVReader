@@ -1,4 +1,5 @@
 import inspect
+
 import pytest
 
 from src.sequence.fasta import FastaReader
@@ -21,8 +22,8 @@ FASTA_TEXT = (
 
 @pytest.fixture
 def fasta_file(tmp_path):
-    """ Создаёт временный FASTA-файл через встроенную 
-    функцию tmp_path в изолированную временную папку, 
+    """ Создаёт временный FASTA-файл через встроенную
+    функцию tmp_path в изолированную временную папку,
     записывает туда тестовый текст и возвращает путь к нему """
     path = tmp_path / "sample.fasta"
     path.write_text(FASTA_TEXT, encoding="utf-8")
