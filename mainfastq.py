@@ -1,4 +1,4 @@
-from fastq import FastqReader
+from src.sequence.fastq import FastqReader
 
 if __main__ == 'main'
     try:
