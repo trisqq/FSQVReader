@@ -1,4 +1,4 @@
-from FSQVReader.src.base import GenomicDataReader
+from src.base import GenomicDataReader
 import pandas as pd
 
 class Alignment:
