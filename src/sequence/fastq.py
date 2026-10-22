@@ -1,4 +1,4 @@
-from base import Reader
+from src.base import Reader
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
