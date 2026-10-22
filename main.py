@@ -1,6 +1,7 @@
 from src.genomic.vcf import VcfReader
 from src.sequence.fasta import FastaReader
 from src.genomic.sam import SamReader
+from src.sequence.fastq import FastqReader
 
 
 def main():
@@ -57,3 +58,12 @@ if __name__ == "__main__":
     print("=========================================================================")
     demo_sam("sample_sam")
 
+
+
+if __main__ == '__main__':
+    fastq = FastqReader("test.fastq")
+    print(f"Количество последовательностей: {fastq.get_sequence_count()}")
+    print(f"Средняя длина: {fastq.get_average_length():.2f} bp")        
+    print("Строим графики (это может занять пару секунд)...")
+    fastq.generate_plots(limit=1000) 
+    fastq.close()
