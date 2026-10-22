@@ -215,15 +215,3 @@ class SamReader(GenomicDataReader):
 
 
 
-
-
-
-
-
-a = SamReader(r"/FSQVReader/sample_sam")
-
-print(a.get_alignments_in_region('chr1', 1, 100))
-
-
-
-
